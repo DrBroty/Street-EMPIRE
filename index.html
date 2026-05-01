@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Empire - Gang Wars</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>STREET EMPIRE</h1>
+                <div class="level-info">
+                    <div class="level-display">Level <span id="player-level">1</span></div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xp-fill"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item" title="Used for recruiting and upgrades">
+                    <img src="images/money.png" class="stat-icon" alt="Money">
+                    <div class="stat-info">
+                        <span class="stat-label">Cash</span>
+                        <span class="stat-value" id="money">$0</span>
+                    </div>
+                </div>
+                <div class="stat-item" title="Unlocks special features and bonuses">
+                    <img src="images/respect.png" class="stat-icon" alt="Respect" onerror="this.style.display='none'">
+                    <div class="stat-info">
+                        <span class="stat-label">Respect</span>
+                        <span class="stat-value" id="respect">0</span>
+                    </div>
+                </div>
+                <div class="stat-item" title="Required for advanced missions">
+                    <img src="images/influence.png" class="stat-icon" alt="Influence" onerror="this.style.display='none'">
+                    <div class="stat-info">
+                        <span class="stat-label">Influence</span>
+                        <span class="stat-value" id="influence">0</span>
+                    </div>
+                </div>
+                <div class="stat-item" title="Increases combat power in gang wars">
+                    <img src="images/weapons.png" class="stat-icon" alt="Weapons" onerror="this.style.display='none'">
+                    <div class="stat-info">
+                        <span class="stat-label">Weapons</span>
+                        <span class="stat-value" id="weapons">0</span>
+                    </div>
+                </div>
+                <div class="stat-item" title="Unlocks elite content and bonuses">
+                    <img src="images/prestige.png" class="stat-icon" alt="Prestige" onerror="this.style.display='none'">
+                    <div class="stat-info">
+                        <span class="stat-label">Prestige</span>
+                        <span class="stat-value" id="prestige">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="main-tabs">
+            <div class="main-tab active" data-tab="crew">👥 CREW</div>
+            <div class="main-tab" data-tab="territory">🏢 TERRITORY</div>
+            <div class="main-tab" data-tab="missions">🎯 MISSIONS</div>
+            <div class="main-tab" data-tab="gangwars">⚔️ GANG WARS</div>
+            <div class="main-tab" data-tab="collection">🎴 COLLECTION</div>
+            <div class="main-tab" data-tab="achievements">🏆 ACHIEVEMENTS</div>
+        </div>
+
+        <!-- Content Panels -->
+        <div class="content-wrapper">
+            
+            <!-- CREW TAB -->
+            <div class="tab-content active" id="tab-crew">
+                <div class="crew-layout">
+                    <div class="panel">
+                        <div class="panel-header">GANG POSITIONS</div>
+                        <div class="income-display">
+                            <div class="income-item">
+                                <span>Income/sec:</span>
+                                <span class="income-value" id="income-rate">$0</span>
+                            </div>
+                            <div class="income-item">
+                                <span>Gang Power:</span>
+                                <span class="income-value" id="gang-power">0</span>
+                            </div>
+                            <div class="income-item">
+                                <span>Combat Strength:</span>
+                                <span class="income-value" id="combat-strength">0</span>
+                            </div>
+                        </div>
+                        <div class="positions-grid" id="positions-grid"></div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">RECRUIT MEMBERS</div>
+                        <button class="btn btn-full" id="recruit-btn">
+                            RECRUIT - <span id="recruit-cost">$500</span>
+                        </button>
+                        <div class="char-tabs">
+                            <div class="char-tab active" data-tab="owned">OWNED (<span id="owned-count">0</span>)</div>
+                            <div class="char-tab" data-tab="inventory">INVENTORY (<span id="inventory-count">0</span>)</div>
+                        </div>
+                        <div class="owned-chars" id="owned-chars-grid"></div>
+                        <div class="inventory-chars" id="inventory-chars-grid" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TERRITORY TAB -->
+            <div class="tab-content" id="tab-territory">
+                <div class="territory-layout">
+                    <div class="panel territory-panel">
+                        <div class="panel-header">YOUR TERRITORY</div>
+                        <div class="territory-view" id="territory-view">
+                            <div class="city-bg"></div>
+                        </div>
+                        <div class="territory-info">
+                            <div class="territory-level-info">
+                                <div class="territory-level-label">Territory Level</div>
+                                <div class="territory-level-value" id="base-level">1</div>
+                                <div class="territory-level-desc" id="territory-desc">Small Operation</div>
+                                <div class="territory-bonuses">
+                                    <div class="territory-bonus">Income: +<span id="territory-income-bonus">0</span>%</div>
+                                    <div class="territory-bonus">Max Crew: <span id="max-crew">7</span></div>
+                                </div>
+                            </div>
+                            <button class="btn" id="upgrade-base-btn">
+                                UPGRADE - <span id="upgrade-cost">$5,000</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MISSIONS TAB -->
+            <div class="tab-content" id="tab-missions">
+                <div class="missions-layout">
+                    <div class="panel missions-panel">
+                        <div class="panel-header">AVAILABLE MISSIONS</div>
+                        <div class="missions-grid" id="missions-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GANG WARS TAB -->
+            <div class="tab-content" id="tab-gangwars">
+                <div class="gangwars-layout">
+                    <div class="panel gangwars-panel">
+                        <div class="panel-header">GANG WARS - PvE BATTLES</div>
+                        <div class="gangwars-info">
+                            <div class="war-stat">
+                                <span>Your Combat Power:</span>
+                                <span class="war-value" id="war-combat-power">0</span>
+                            </div>
+                            <div class="war-stat">
+                                <span>Weapon Bonus:</span>
+                                <span class="war-value">+<span id="weapon-bonus">0</span>%</span>
+                            </div>
+                            <div class="war-stat">
+                                <span>Wins:</span>
+                                <span class="war-value" id="war-wins">0</span>
+                            </div>
+                            <div class="war-stat">
+                                <span>Losses:</span>
+                                <span class="war-value" id="war-losses">0</span>
+                            </div>
+                        </div>
+                        <div class="enemy-gangs-grid" id="enemy-gangs-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLLECTION TAB -->
+            <div class="tab-content" id="tab-collection">
+                <div class="collection-layout">
+                    <div class="panel collection-panel">
+                        <div class="panel-header">CHARACTER COLLECTION</div>
+                        <div class="collection-stats">
+                            <div class="collection-stat">
+                                <span>Collected:</span>
+                                <span id="collection-progress">0/?</span>
+                            </div>
+                            <div class="collection-stat">
+                                <span>Completion:</span>
+                                <span id="collection-percentage">0%</span>
+                            </div>
+                        </div>
+                        <div class="rarity-filter">
+                            <button class="filter-btn active" data-rarity="all">ALL</button>
+                            <button class="filter-btn" data-rarity="common">COMMON</button>
+                            <button class="filter-btn" data-rarity="uncommon">UNCOMMON</button>
+                            <button class="filter-btn" data-rarity="rare">RARE</button>
+                            <button class="filter-btn" data-rarity="epic">EPIC</button>
+                            <button class="filter-btn" data-rarity="legendary">LEGENDARY</button>
+                        </div>
+                        <div class="collection-grid" id="collection-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACHIEVEMENTS TAB -->
+            <div class="tab-content" id="tab-achievements">
+                <div class="achievements-layout">
+                    <div class="panel achievements-panel">
+                        <div class="panel-header">ACHIEVEMENTS</div>
+                        <div class="achievements-grid" id="achievements-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Character Detail Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications"></div>
+
+    <!-- Battle Animation Overlay -->
+    <div id="battle-overlay" class="battle-overlay">
+        <div class="battle-content">
+            <div class="battle-header">GANG WAR</div>
+            <div class="battle-vs">
+                <div class="battle-gang yours">
+                    <div class="gang-name">YOUR GANG</div>
+                    <div class="gang-power" id="battle-your-power">0</div>
+                    <div class="gang-hp-bar">
+                        <div class="gang-hp-fill" id="battle-your-hp"></div>
+                    </div>
+                </div>
+                <div class="battle-vs-text">VS</div>
+                <div class="battle-gang enemy">
+                    <div class="gang-name" id="battle-enemy-name">ENEMY</div>
+                    <div class="gang-power" id="battle-enemy-power">0</div>
+                    <div class="gang-hp-bar">
+                        <div class="gang-hp-fill" id="battle-enemy-hp"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="battle-log" id="battle-log"></div>
+            <div class="battle-result" id="battle-result"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
