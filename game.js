@@ -34,7 +34,14 @@ const RARITIES = [
     { name: 'uncommon', chance: 0.30, statMultiplier: 1.4, color: '#00ff41', recycleValue: 150 },
     { name: 'rare', chance: 0.15, statMultiplier: 1.9, color: '#00bfff', recycleValue: 400 },
     { name: 'epic', chance: 0.04, statMultiplier: 2.5, color: '#9d00ff', recycleValue: 1000 },
-    { name: 'legendary', chance: 0.01, statMultiplier: 3.5, color: '#ff9800', recycleValue: 3000 }
+    { name: 'legendary', chance: 0.009, statMultiplier: 3.5, color: '#ff9800', recycleValue: 3000 },
+
+    // Erweiterung
+    { name: 'mythic', chance: 0.0009, statMultiplier: 5.0, color: '#ff0055', recycleValue: 8000 },
+    { name: 'ancient', chance: 0.00008, statMultiplier: 7.0, color: '#ffd700', recycleValue: 20000 },
+    { name: 'divine', chance: 0.000009, statMultiplier: 10.0, color: '#00ffff', recycleValue: 50000 },
+    { name: 'cosmic', chance: 0.0000009, statMultiplier: 14.0, color: '#4b00ff', recycleValue: 120000 },
+    { name: 'transcendent', chance: 0.0000001, statMultiplier: 20.0, color: '#ffffff', recycleValue: 300000 }
 ];
 
 const CHARACTER_NAMES = [
@@ -48,7 +55,23 @@ const CHARACTER_NAMES = [
     'Matty Iron', 'Benny Quick', 'Jackie Blade', 'Philly Phantom', 'Dom Shadow',
     'Vito Titan', 'Gus Hammer', 'Lefty Trigger', 'Ricky Smoke', 'Chris Venom',
     'Eugene Beast', 'Nino Razor', 'Georgie Gunner', 'Ray Numbers', 'Sal Ice',
-    'Lou Fist', 'Freddy Scar'
+    'Lou Fist', 'Freddy Scar',
+
+    // 🔥 Erweiterung (neue Charaktere)
+    'Dario "Silk"', 'Marco Leone', 'Elijah Cross', 'Noah Vance', 'Leo Marconi',
+    'Santino Vale', 'Rocco DeLuca', 'Enzo Ferraro', 'Luca Moretti', 'Gianni Russo',
+    'Antonio Sable', 'Diego Cortez', 'Carlos Vega', 'Miguel Santos', 'Javier Cruz',
+    'Andre Laurent', 'Pierre Dubois', 'Julien Noir', 'Victor Sokolov', 'Ivan Volkov',
+    'Dmitri Petrov', 'Alexei Morozov', 'Sergei Ivanov', 'Boris Karpov',
+    'Kenji Takahashi', 'Hiroshi Sato', 'Takeshi Nakamura', 'Ryo Tanaka',
+    'Hassan Malik', 'Omar Farouk', 'Youssef Nadir', 'Khalid Rahman',
+    'Zane Carter', 'Derek Mason', 'Tyler Briggs', 'Cole Harrison', 'Blake Mercer',
+    'Reese Donovan', 'Shawn Mitchell', 'Logan Pierce', 'Hunter Blake',
+    'Jax Monroe', 'Zack Ryder', 'Mason Drake', 'Cody Steele', 'Ethan Viper',
+    'Noel Frost', 'Aiden Storm', 'Roman Knight', 'Atlas Grimm', 'Dex Carter',
+    'Kane Bishop', 'Miles Vandal', 'Travis Lockwood', 'Silas Crow',
+    'Damien Knox', 'Victor Hale', 'Grayson Wolfe', 'Lincoln Shade',
+    'Ryder Steel', 'Phoenix Ward', 'Axel Stone', 'Jett Falcon'
 ];
 
 const MISSION_TEMPLATES = [
@@ -90,7 +113,7 @@ const MISSION_TEMPLATES = [
         difficulty: 'medium',
         requirements: { gangPower: 250 },
         duration: 90,
-        rewards: { money: 8000, influence: 100 , weapons: 10 }
+        rewards: { money: 8000, influence: 100, weapons: 10 }
     },
     {
         title: 'Assassination Contract',
@@ -98,7 +121,7 @@ const MISSION_TEMPLATES = [
         difficulty: 'hard',
         requirements: { gangPower: 450, weapons: 50 },
         duration: 120,
-        rewards: { money: 12000, respect: 250, prestige: 1 , weapons: 100 }
+        rewards: { money: 12000, respect: 250, prestige: 1, weapons: 100 }
     },
     {
         title: 'Underground Fight',
@@ -131,20 +154,118 @@ const MISSION_TEMPLATES = [
         requirements: { gangPower: 350, influence: 150 },
         duration: 75,
         rewards: { money: 7000, respect: 180, influence: 80 }
+    },
+
+    // 🔥 NEUE MISSIONEN (Endgame / High Tier)
+
+    {
+        title: 'Cartel Alliance',
+        desc: 'Negotiate and secure an alliance with a powerful cartel. High risk diplomacy.',
+        difficulty: 'very_hard',
+        requirements: { gangPower: 800, influence: 400, prestige: 2 },
+        duration: 180,
+        rewards: { money: 30000, respect: 700, influence: 400, prestige: 2 }
+    },
+    {
+        title: 'Citywide Blackout',
+        desc: 'Shut down the entire city grid to create chaos and opportunity.',
+        difficulty: 'very_hard',
+        requirements: { gangPower: 900, weapons: 150, influence: 300 },
+        duration: 150,
+        rewards: { money: 28000, respect: 600, influence: 300 }
+    },
+    {
+        title: 'Federal Convoy Ambush',
+        desc: 'Ambush a heavily guarded federal convoy transporting classified cargo.',
+        difficulty: 'extreme',
+        requirements: { gangPower: 1200, weapons: 250, prestige: 3 },
+        duration: 210,
+        rewards: { money: 50000, weapons: 300, respect: 1000, prestige: 3 }
+    },
+    {
+        title: 'Prison Break',
+        desc: 'Break out a high-profile inmate from a maximum security prison.',
+        difficulty: 'extreme',
+        requirements: { gangPower: 1100, influence: 500, weapons: 200 },
+        duration: 240,
+        rewards: { money: 45000, respect: 900, influence: 400, prestige: 2 }
+    },
+    {
+        title: 'Corporate Infiltration',
+        desc: 'Infiltrate a major corporation and extract sensitive data.',
+        difficulty: 'very_hard',
+        requirements: { gangPower: 850, influence: 600 },
+        duration: 160,
+        rewards: { money: 35000, influence: 500, respect: 500 }
+    },
+    {
+        title: 'Global Smuggling Network',
+        desc: 'Establish a global smuggling network across multiple countries.',
+        difficulty: 'legendary',
+        requirements: { gangPower: 1500, influence: 800, prestige: 4 },
+        duration: 300,
+        rewards: { money: 100000, influence: 800, respect: 1500, prestige: 5 }
+    },
+    {
+        title: 'Shadow Government Deal',
+        desc: 'Strike a deal with corrupt officials controlling the city behind the scenes.',
+        difficulty: 'legendary',
+        requirements: { gangPower: 1400, influence: 1000, prestige: 5 },
+        duration: 280,
+        rewards: { money: 120000, influence: 1000, respect: 1200, prestige: 6 }
+    },
+    {
+        title: 'Kingpin Ascension',
+        desc: 'Eliminate all major rivals and claim absolute control over the city.',
+        difficulty: 'legendary',
+        requirements: { gangPower: 2000, weapons: 500, influence: 1200, prestige: 6 },
+        duration: 360,
+        rewards: { money: 250000, respect: 3000, influence: 2000, prestige: 10 }
     }
 ];
 
 const ACHIEVEMENTS = [
     { id: 'first_recruit', name: 'First Blood', desc: 'Recruit your first crew member', icon: '👤', requirement: { type: 'recruits', value: 1 }, reward: { money: 5000 } },
     { id: 'gang_of_five', name: 'Gang of Five', desc: 'Have 5 crew members', icon: '👥', requirement: { type: 'recruits', value: 5 }, reward: { money: 20000, respect: 100 } },
+    { id: 'crew_master', name: 'Crew Master', desc: 'Have 25 crew members', icon: '🧠', requirement: { type: 'recruits', value: 25 }, reward: { money: 50000, respect: 300 } },
+    { id: 'crew_legend', name: 'Crew Legend', desc: 'Have 50 crew members', icon: '👑', requirement: { type: 'recruits', value: 50 }, reward: { prestige: 2, influence: 300 } },
+
     { id: 'full_crew', name: 'Full Crew', desc: 'Collect all 52 characters', icon: '🎖️', requirement: { type: 'collection', value: 52 }, reward: { money: 50000, prestige: 5 } },
+
     { id: 'first_mission', name: 'Mission Starter', desc: 'Complete your first mission', icon: '🎯', requirement: { type: 'missions', value: 1 }, reward: { weapons: 10 } },
     { id: 'mission_veteran', name: 'Mission Veteran', desc: 'Complete 10 missions', icon: '⭐', requirement: { type: 'missions', value: 10 }, reward: { money: 10000, prestige: 1 } },
+    { id: 'mission_expert', name: 'Mission Expert', desc: 'Complete 50 missions', icon: '🔥', requirement: { type: 'missions', value: 50 }, reward: { money: 50000, respect: 500 } },
+    { id: 'mission_overlord', name: 'Mission Overlord', desc: 'Complete 200 missions', icon: '💀', requirement: { type: 'missions', value: 200 }, reward: { prestige: 3, influence: 500 } },
+
     { id: 'rich', name: 'Money Maker', desc: 'Accumulate $100,000', icon: '💰', requirement: { type: 'money', value: 100000 }, reward: { prestige: 2 } },
+    { id: 'millionaire', name: 'Millionaire', desc: 'Accumulate $1,000,000', icon: '🤑', requirement: { type: 'money', value: 1000000 }, reward: { prestige: 3 } },
+    { id: 'billionaire', name: 'Underworld Tycoon', desc: 'Accumulate $10,000,000', icon: '🏦', requirement: { type: 'money', value: 10000000 }, reward: { prestige: 5, influence: 1000 } },
+
     { id: 'respected', name: 'Respected', desc: 'Gain 1,000 Respect', icon: '💎', requirement: { type: 'respect', value: 1000 }, reward: { influence: 500 } },
+    { id: 'feared', name: 'Feared', desc: 'Gain 5,000 Respect', icon: '😈', requirement: { type: 'respect', value: 5000 }, reward: { prestige: 2 } },
+    { id: 'legend_status', name: 'Living Legend', desc: 'Gain 20,000 Respect', icon: '👑', requirement: { type: 'respect', value: 20000 }, reward: { prestige: 5, influence: 2000 } },
+
     { id: 'legendary_pull', name: 'Lucky Draw', desc: 'Recruit a Legendary character', icon: '🌟', requirement: { type: 'legendary', value: 1 }, reward: { money: 500000 } },
+    { id: 'mythic_pull', name: 'Myth Hunter', desc: 'Recruit a Mythic character', icon: '🔥', requirement: { type: 'mythic', value: 1 }, reward: { prestige: 2, money: 200000 } },
+    { id: 'divine_pull', name: 'Divine Intervention', desc: 'Recruit a Divine character', icon: '⚡', requirement: { type: 'divine', value: 1 }, reward: { prestige: 4, influence: 1000 } },
+    { id: 'transcendent_pull', name: 'Beyond Reality', desc: 'Recruit a Transcendent character', icon: '🌌', requirement: { type: 'transcendent', value: 1 }, reward: { prestige: 10 } },
+
     { id: 'empire_builder', name: 'Empire Builder', desc: 'Upgrade territory to max level', icon: '🏢', requirement: { type: 'territory', value: 3 }, reward: { money: 20000, prestige: 3 } },
-    { id: 'arsenal', name: 'Armed & Dangerous', desc: 'Accumulate 500 weapons', icon: '🔫', requirement: { type: 'weapons', value: 500 }, reward: { prestige: 1 } }
+    { id: 'world_domination', name: 'World Domination', desc: 'Max all territories', icon: '🌍', requirement: { type: 'territory_max_all', value: 1 }, reward: { prestige: 5, influence: 1500 } },
+
+    { id: 'arsenal', name: 'Armed & Dangerous', desc: 'Accumulate 500 weapons', icon: '🔫', requirement: { type: 'weapons', value: 500 }, reward: { prestige: 1 } },
+    { id: 'war_machine', name: 'War Machine', desc: 'Accumulate 2000 weapons', icon: '💣', requirement: { type: 'weapons', value: 2000 }, reward: { prestige: 3 } },
+    { id: 'arsenal_god', name: 'Arsenal God', desc: 'Accumulate 10000 weapons', icon: '☢️', requirement: { type: 'weapons', value: 10000 }, reward: { prestige: 6 } },
+
+    // 🔥 ENDGAME / FLEX ACHIEVEMENTS
+
+    { id: 'prestige_1', name: 'New Beginning', desc: 'Reach Prestige Level 1', icon: '🔁', requirement: { type: 'prestige', value: 1 }, reward: { money: 50000 } },
+    { id: 'prestige_5', name: 'Rising Power', desc: 'Reach Prestige Level 5', icon: '🚀', requirement: { type: 'prestige', value: 5 }, reward: { influence: 2000 } },
+    { id: 'prestige_10', name: 'Untouchable', desc: 'Reach Prestige Level 10', icon: '⚜️', requirement: { type: 'prestige', value: 10 }, reward: { money: 200000, influence: 5000 } },
+
+    { id: 'completionist', name: 'Completionist', desc: 'Unlock 50 achievements', icon: '📜', requirement: { type: 'achievements', value: 50 }, reward: { prestige: 5 } },
+
+    { id: 'godfather', name: 'The Godfather', desc: 'Reach endgame dominance across all systems', icon: '🕴️', requirement: { type: 'meta', value: 1 }, reward: { prestige: 20, money: 1000000, influence: 10000 } }
 ];
 
 // Generate Characters (persistent stats)
