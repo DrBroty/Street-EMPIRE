@@ -1,0 +1,101 @@
+/* STREET EMPIRE — GTA-V inspired brand kit
+   Gritty street, graffiti, gold-on-black mafia accents */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Special+Elite&family=Rubik+Mono+One&family=Permanent+Marker&family=Archivo+Black&family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap');
+
+:root {
+  /* Core palette — gritty street */
+  --se-black: #0b0b0c;
+  --se-asphalt: #15161a;
+  --se-concrete: #1f2126;
+  --se-fog: #2a2d34;
+  --se-paper: #d9d3c1;       /* dirty paper / dossier */
+  --se-bone: #e8e2d0;
+
+  /* Accents */
+  --se-gold: #e8b948;        /* mafia gold */
+  --se-gold-deep: #b78a1f;
+  --se-acid: #c8ff3a;        /* spray paint acid */
+  --se-acid-deep: #8fbf1a;
+  --se-blood: #d23a2c;       /* warning / blood */
+  --se-blood-deep: #8f1f17;
+  --se-cyan: #34d6e8;        /* neon sign */
+  --se-purple: #8b3ad6;      /* boss / legendary */
+
+  /* Rarity */
+  --se-r-common:    #8a8478;
+  --se-r-uncommon:  #c8ff3a;
+  --se-r-rare:      #34d6e8;
+  --se-r-epic:      #b15bff;
+  --se-r-legendary: #e8b948;
+
+  /* Type */
+  --font-display: 'Anton', 'Bebas Neue', sans-serif;
+  --font-graffiti: 'Permanent Marker', cursive;
+  --font-stencil: 'Special Elite', 'Courier New', monospace;
+  --font-ui: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  --font-blocky: 'Archivo Black', sans-serif;
+}
+
+/* Reusable noise/grain (data-uri SVG) */
+.se-grain::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Concrete / asphalt textures */
+.se-concrete-bg {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.04), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(232,185,72,0.06), transparent 60%),
+    linear-gradient(180deg, #16171b 0%, #0c0d10 100%);
+}
+
+.se-paper-bg {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,240,200,0.08), transparent 50%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #d9d3c1 0%, #c4bda8 100%);
+  color: #1a1815;
+}
+
+/* Spray-stencil text */
+.se-stencil {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Police-tape / hazard stripes */
+.se-tape {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--se-gold) 0 18px,
+    #0b0b0c 18px 36px
+  );
+}
+.se-tape-blood {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--se-blood) 0 14px,
+    #0b0b0c 14px 28px
+  );
+}
+
+/* Brushed-stamp utility */
+.se-stamp {
+  font-family: var(--font-graffiti);
+  color: var(--se-blood);
+  text-transform: uppercase;
+  border: 3px solid var(--se-blood);
+  padding: 4px 10px;
+  display: inline-block;
+  transform: rotate(-6deg);
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
