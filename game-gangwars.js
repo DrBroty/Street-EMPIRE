@@ -83,9 +83,6 @@ function renderEnemyGangs() {
         } else if (gang.tier === 'boss') {
             tierClass = 'tier-boss';
             tierColor = 'var(--se-purple)';
-        } else if (gang.tier === 'endgame') {
-            tierClass = 'tier-endgame';
-            tierColor = '#00ffff';
         }
         
         card.style.cssText = `
@@ -321,19 +318,13 @@ function winBattle(gang, resultDiv, closeBtn) {
 
 function loseBattle(gang, resultDiv, closeBtn) {
     addBattleLog(`<div style="color: var(--se-blood); font-weight: bold;">💀 DEFEAT! You were crushed by ${gang.name}!</div>`);
-
-    const weaponLoss = Math.floor(gameState.weapons * 0.1);
-    if (weaponLoss > 0) {
-        gameState.weapons = Math.max(0, gameState.weapons - weaponLoss);
-        addBattleLog(`<div style="color: #ff6600;">🔫 Lost ${weaponLoss} weapons in the battle!</div>`);
-    }
-
+    
     gameState.gangWarLosses++;
-
-    resultDiv.innerHTML = `💀 DEFEAT!<br><div style="font-size: 16px; margin-top: 10px;">Your gang was defeated.${weaponLoss > 0 ? ` Lost ${weaponLoss} weapons.` : ''} Train harder!</div>`;
+    
+    resultDiv.innerHTML = '💀 DEFEAT!<br><div style="font-size: 16px; margin-top: 10px;">Your gang was defeated. Train harder!</div>';
     resultDiv.style.cssText = 'display: block; background: rgba(210, 58, 44, 0.2); border: 2px solid var(--se-blood); color: var(--se-blood); text-align: center; font-size: 24px; font-weight: bold; padding: 20px; border-radius: 8px; font-family: var(--font-display); letter-spacing: 0.08em;';
     closeBtn.style.display = 'block';
-
+    
     notify('Gang War Lost!', 'error');
 }
 
