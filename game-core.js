@@ -500,30 +500,8 @@ function loadGame() {
         try {
             const loaded = JSON.parse(saved);
             Object.assign(gameState, loaded);
-
-            const offlineSeconds = Math.max(0, (Date.now() - gameState.lastUpdate) / 1000);
             gameState.lastUpdate = Date.now();
-
-            if (offlineSeconds > 5 && offlineSeconds < 86400) {
-                const { income, respectIncome, influenceIncome } = calculateIncome();
-                const earnedMoney = Math.floor(income * offlineSeconds);
-                const earnedRespect = Math.floor(respectIncome * offlineSeconds);
-                const earnedInfluence = Math.floor(influenceIncome * offlineSeconds);
-
-                gameState.money += earnedMoney;
-                gameState.respect += earnedRespect;
-                gameState.influence += earnedInfluence;
-
-                const hours = Math.floor(offlineSeconds / 3600);
-                const minutes = Math.floor((offlineSeconds % 3600) / 60);
-                const timeStr = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-
-                setTimeout(() => {
-                    notify(`Welcome back! Earned $${earnedMoney.toLocaleString()} while away (${timeStr})`);
-                }, 500);
-            } else {
-                notify('Game loaded!');
-            }
+            notify('Game loaded!');
         } catch (e) {
             console.error('Failed to load save:', e);
         }
