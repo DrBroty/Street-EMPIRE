@@ -106,10 +106,19 @@ function completeMission(mission) {
     
     gameState.activeMissions = gameState.activeMissions.filter(m => m.id !== mission.id);
     gameState.completedMissions.push(mission.id);
-    
+
     generateNewMission();
-    
+
     notify(`Mission "${mission.title}" completed!`);
+
+    // Floating reward numbers near stats rail
+    if (typeof floatReward === 'function') {
+        if (mission.rewards.money)   floatReward(`+$${mission.rewards.money.toLocaleString()}`, 'money', 'money');
+        if (mission.rewards.weapons) floatReward(`+${mission.rewards.weapons} WEAPONS`, 'weapons', 'weapons');
+        if (mission.rewards.prestige)floatReward(`+${mission.rewards.prestige} PRESTIGE`, 'prestige', 'prestige');
+        if (mission.rewards.respect) floatReward(`+${mission.rewards.respect} RESPECT`, 'respect', 'respect');
+    }
+
     updateAllUI();
     renderMissionsTab();
 }
@@ -219,14 +228,20 @@ function checkAchievements() {
 
 function unlockAchievement(achievement) {
     gameState.unlockedAchievements.push(achievement.id);
-    
+
     Object.entries(achievement.reward).forEach(([key, value]) => {
         if (gameState.hasOwnProperty(key)) {
             gameState[key] += value;
         }
     });
-    
-    notify(`Achievement Unlocked: ${achievement.name}!`);
+
+    // Dramatic banner instead of tiny toast
+    if (typeof showAchievementBanner === 'function') {
+        showAchievementBanner(achievement);
+    } else {
+        notify(`Achievement Unlocked: ${achievement.name}!`);
+    }
+
     renderAchievementsTab();
     updateStatsRail();
 }

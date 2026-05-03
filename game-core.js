@@ -385,16 +385,16 @@ function recruitCharacter() {
     }
     gameState.characterInventory[newChar.id]++;
     
-    notify(`${newChar.name} (${newChar.rarity}) recruited!`);
-    
-    // Update UI will be called by game-ui.js
+    // Update UI
     if (typeof updateAllUI === 'function') {
         updateAllUI();
     }
-    
-    // Show character detail will be called by game-ui.js
-    if (typeof showCharacterDetail === 'function') {
-        showCharacterDetail(newChar);
+
+    // Dramatic card reveal (replaces plain notify for recruits)
+    if (typeof showRecruitReveal === 'function') {
+        showRecruitReveal(newChar);
+    } else {
+        notify(`${newChar.name} (${newChar.rarity}) recruited!`);
     }
 }
 
@@ -459,15 +459,28 @@ function assignPosition(posId, charId) {
     }
     
     gameState.assignedPositions[posId] = charId;
-    
-    if (typeof updateAllUI === 'function') {
-        updateAllUI();
-    }
-    
+
     if (typeof closeModal === 'function') {
         closeModal();
     }
-    
+
+    if (typeof updateAllUI === 'function') {
+        updateAllUI();
+    }
+
+    // Flash the newly-filled position card
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.position-card.filled');
+        cards.forEach(card => {
+            const nameEl = card.querySelector('.position-name');
+            const pos = POSITIONS.find(p => p.name === nameEl?.textContent);
+            if (pos && pos.id === posId) {
+                card.classList.add('fill-flash');
+                setTimeout(() => card.classList.remove('fill-flash'), 700);
+            }
+        });
+    }, 50);
+
     notify('Character assigned!');
 }
 

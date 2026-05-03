@@ -14,18 +14,42 @@ function updateAllUI() {
 
 function updateStatsRail() {
     const { income, respectIncome, influenceIncome } = calculateIncome();
-    
-    document.getElementById('money').textContent = '$' + Math.floor(gameState.money).toLocaleString();
-    document.getElementById('respect').textContent = Math.floor(gameState.respect).toLocaleString();
-    document.getElementById('influence').textContent = Math.floor(gameState.influence).toLocaleString();
-    document.getElementById('weapons').textContent = Math.floor(gameState.weapons).toLocaleString();
-    document.getElementById('prestige').textContent = Math.floor(gameState.prestige).toLocaleString();
-    
+
+    const _setVal = (id, text) => {
+        const el = document.getElementById(id);
+        if (el && el.textContent !== text) {
+            el.textContent = text;
+            el.classList.remove('stat-pop');
+            void el.offsetWidth; // reflow to restart animation
+            el.classList.add('stat-pop');
+        }
+    };
+
+    _setVal('money',    '$' + Math.floor(gameState.money).toLocaleString());
+    _setVal('respect',  Math.floor(gameState.respect).toLocaleString());
+    _setVal('influence',Math.floor(gameState.influence).toLocaleString());
+    _setVal('weapons',  Math.floor(gameState.weapons).toLocaleString());
+    _setVal('prestige', Math.floor(gameState.prestige).toLocaleString());
+
     document.getElementById('income-trend').textContent = '+$' + Math.floor(income).toLocaleString() + '/s';
     document.getElementById('respect-trend').textContent = '+' + Math.floor(respectIncome * 60).toLocaleString() + '/m';
     document.getElementById('influence-trend').textContent = '+' + Math.floor(influenceIncome * 60).toLocaleString() + '/m';
-    
+
     document.getElementById('recruit-cost').textContent = '$' + gameState.recruitCost.toLocaleString();
+
+    updateRecruitButton();
+}
+
+// Pulse the recruit button when the player can afford it
+function updateRecruitButton() {
+    const btn = document.getElementById('recruit-btn');
+    if (!btn) return;
+    if (gameState.money >= gameState.recruitCost) {
+        btn.classList.add('can-afford');
+        btn.disabled = false;
+    } else {
+        btn.classList.remove('can-afford');
+    }
 }
 
 function updateNavCounts() {
@@ -552,5 +576,174 @@ function closeModal() {
     const modal = document.getElementById('modal');
     modal.classList.remove('active');
 }
+
+// ============================================================
+// RECRUIT REVEAL — full-screen animated card reveal
+// ============================================================
+const RARITY_COLORS = {
+    common: '#8a8478', uncommon: '#c8ff3a', rare: '#34d6e8',
+    epic: '#b15bff', legendary: '#e8b948', mythic: '#ff0055',
+    ancient: '#ffd700', divine: '#00ffff', cosmic: '#7b4fff', transcendent: '#ffffff'
+};
+
+function showRecruitReveal(char) {
+    // Remove any existing reveal
+    const old = document.getElementById('recruit-reveal');
+    if (old) old.remove();
+
+    const rarity = RARITIES.find(r => r.name === char.rarity);
+    const color = RARITY_COLORS[char.rarity] || '#888';
+
+    const overlay = document.createElement('div');
+    overlay.id = 'recruit-reveal';
+
+    const charDisplay = char.image
+        ? `<img src="characters/images/${char.image}" alt="${char.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+        : `<span style="font-size:4.5em;line-height:1;">${char.emoji}</span>`;
+
+    overlay.innerHTML = `
+        <div class="reveal-radial reveal-bg-${char.rarity}"></div>
+        <div class="recruit-card-reveal" style="text-align:center;padding:40px 50px;position:relative;z-index:1;">
+
+            <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.3em;color:${color};text-transform:uppercase;margin-bottom:22px;opacity:0.7;">
+                ⟨ NEW RECRUIT ⟩
+            </div>
+
+            <div style="
+                width:180px;height:180px;margin:0 auto 24px;
+                background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);
+                border-radius:10px;border:3px solid ${color};
+                box-shadow:0 0 50px ${color}80;
+                display:flex;align-items:center;justify-content:center;overflow:hidden;
+            ">${charDisplay}</div>
+
+            <div style="font-family:var(--font-display);font-size:34px;color:#fff;letter-spacing:0.08em;margin-bottom:10px;">${char.name}</div>
+
+            <div style="
+                display:inline-block;font-family:var(--font-mono);font-size:13px;
+                letter-spacing:0.22em;color:${color};text-transform:uppercase;
+                border:1px solid ${color};padding:6px 22px;border-radius:3px;
+                background:${color}18;margin-bottom:26px;
+            ">${char.rarity}</div>
+
+            <div style="display:flex;gap:14px;justify-content:center;margin-bottom:32px;">
+                ${['strength','intelligence','agility','leadership'].map(stat => `
+                    <div style="text-align:center;background:rgba(0,0,0,0.45);padding:10px 14px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);">
+                        <div style="font-family:var(--font-mono);font-size:9px;color:#555;letter-spacing:0.15em;">${stat.toUpperCase().slice(0,4)}</div>
+                        <div style="font-family:var(--font-display);font-size:26px;color:${color};margin-top:2px;">${char[stat]}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div style="font-family:var(--font-mono);font-size:11px;color:#444;letter-spacing:0.18em;">CLICK ANYWHERE TO DISMISS</div>
+        </div>
+    `;
+
+    // Spawn particles for rare+
+    const particleRarities = ['rare','epic','legendary','mythic','ancient','divine','cosmic','transcendent'];
+    if (particleRarities.includes(char.rarity)) {
+        const count = char.rarity === 'transcendent' ? 35
+                    : char.rarity === 'cosmic'        ? 28
+                    : char.rarity === 'divine'         ? 24
+                    : char.rarity === 'ancient'        ? 20
+                    : char.rarity === 'mythic'         ? 18
+                    : char.rarity === 'legendary'      ? 16
+                    : char.rarity === 'epic'           ? 10 : 7;
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * 360;
+            const dist  = 120 + Math.random() * 220;
+            const tx    = Math.cos(angle * Math.PI / 180) * dist;
+            const ty    = Math.sin(angle * Math.PI / 180) * dist;
+            const size  = 4 + Math.random() * 7;
+            const delay = Math.random() * 0.45;
+            const dur   = 0.65 + Math.random() * 0.75;
+            const p     = document.createElement('div');
+            p.className = 'se-particle';
+            p.style.cssText = `
+                width:${size}px;height:${size}px;
+                background:${color};box-shadow:0 0 6px ${color};
+                --tx:${tx}px;--ty:${ty}px;--dur:${dur}s;--delay:${delay}s;
+                margin-left:-${size/2}px;margin-top:-${size/2}px;
+            `;
+            overlay.appendChild(p);
+        }
+    }
+
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+}
+
+// ============================================================
+// ACHIEVEMENT BANNER — slides up from bottom
+// ============================================================
+let _achTimeout = null;
+
+function showAchievementBanner(achievement) {
+    let banner = document.getElementById('achievement-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'achievement-banner';
+        document.body.appendChild(banner);
+    }
+
+    const rewardStr = Object.entries(achievement.reward)
+        .map(([k, v]) => `+${v.toLocaleString()} ${k}`)
+        .join('  ·  ');
+
+    banner.innerHTML = `
+        <div class="ach-icon">${achievement.icon}</div>
+        <div class="ach-info">
+            <div class="ach-label">⟨ ACHIEVEMENT UNLOCKED ⟩</div>
+            <div class="ach-name">${achievement.name}</div>
+            <div class="ach-desc">${achievement.desc}</div>
+            <div class="ach-reward">${rewardStr}</div>
+        </div>
+    `;
+
+    // Reset any pending hide timer
+    if (_achTimeout) clearTimeout(_achTimeout);
+    banner.classList.add('show');
+
+    _achTimeout = setTimeout(() => {
+        banner.classList.remove('show');
+        _achTimeout = null;
+    }, 4000);
+}
+
+// ============================================================
+// FLOATING REWARD NUMBERS
+// ============================================================
+function floatReward(text, type, anchorId) {
+    const anchor = document.getElementById(anchorId || 'money');
+    if (!anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const el = document.createElement('div');
+    el.className = `float-reward ${type}`;
+    el.textContent = text;
+    // Position near the stat element, slightly randomised horizontally
+    el.style.left = (rect.left + rect.width * 0.25 + Math.random() * 30) + 'px';
+    el.style.top  = (rect.top - 10) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+}
+
+// ============================================================
+// CLICK RIPPLE — visual feedback on buttons
+// ============================================================
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.btn, .btn-recruit');
+    if (!btn || btn.disabled) return;
+    const r = btn.getBoundingClientRect();
+    const size = Math.max(r.width, r.height);
+    const ripple = document.createElement('span');
+    ripple.className = 'btn-ripple';
+    ripple.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${e.clientX - r.left - size / 2}px;
+        top:${e.clientY - r.top - size / 2}px;
+    `;
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 650);
+});
 
 console.log('✅ game-ui.js loaded!');

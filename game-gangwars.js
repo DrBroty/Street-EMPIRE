@@ -255,11 +255,19 @@ function simulateBattle(gang, playerCombat) {
         setTimeout(() => {
             const enemyDamage = Math.floor((gang.power / playerCombat) * 20 + Math.random() * 10);
             playerHP = Math.max(0, playerHP - enemyDamage);
-            
+
             addBattleLog(`<div style="color: var(--se-blood);">💥 ${gang.name} deals ${enemyDamage} damage!</div>`);
-            
+
             playerHPBar.style.width = playerHP + '%';
             playerHPBar.textContent = Math.floor(playerHP) + '%';
+
+            // Screen shake when taking damage
+            const overlay = document.getElementById('battle-overlay');
+            if (overlay) {
+                overlay.classList.remove('screen-shake');
+                void overlay.offsetWidth;
+                overlay.classList.add('screen-shake');
+            }
             
             if (playerHP <= 0) {
                 clearInterval(battleInterval);
@@ -311,8 +319,15 @@ function winBattle(gang, resultDiv, closeBtn) {
     `;
     resultDiv.style.cssText = 'display: block; background: rgba(200, 255, 58, 0.2); border: 2px solid var(--se-acid); color: var(--se-acid); text-align: center; font-size: 24px; font-weight: bold; padding: 20px; border-radius: 8px; font-family: var(--font-display); letter-spacing: 0.08em;';
     closeBtn.style.display = 'block';
-    
+
     notify('Gang War Victory!');
+
+    // Floating reward numbers
+    if (typeof floatReward === 'function') {
+        if (gang.rewards.money)   floatReward(`+$${gang.rewards.money.toLocaleString()}`, 'money', 'money');
+        if (gang.rewards.prestige)floatReward(`+${gang.rewards.prestige} PRESTIGE`, 'prestige', 'prestige');
+        if (gang.rewards.weapons) floatReward(`+${gang.rewards.weapons} WEAPONS`, 'weapons', 'weapons');
+    }
     
     if (typeof updateAllUI === 'function') {
         updateAllUI();

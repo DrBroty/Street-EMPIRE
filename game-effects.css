@@ -1,0 +1,308 @@
+/* ================================================
+   STREET EMPIRE — GAME EFFECTS
+   Animations, reveals, particles, UI feedback
+   ================================================ */
+
+/* ---- PAGE TITLE ---- */
+.v2-h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: #fff;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin: 0;
+}
+
+/* ---- RECRUIT BUTTON PULSE ---- */
+@keyframes recruitPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,255,58,0), 0 2px 0 #4a6a10; transform: translateY(0); }
+  50%       { box-shadow: 0 0 0 8px rgba(200,255,58,0.15), 0 0 30px rgba(200,255,58,0.5), 0 2px 0 #4a6a10; transform: translateY(-2px); }
+}
+.btn-recruit.can-afford {
+  animation: recruitPulse 2s ease-in-out infinite;
+}
+
+/* ---- TAB CONTENT SLIDE ---- */
+.tab-content.active {
+  animation: tabSlide 0.25s ease;
+}
+@keyframes tabSlide {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================
+   RECRUIT CARD REVEAL
+   ============================================ */
+#recruit-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.96);
+}
+
+@keyframes cardFlip {
+  0%   { transform: perspective(800px) rotateY(90deg) scale(0.7); opacity: 0; }
+  45%  { transform: perspective(800px) rotateY(-12deg) scale(1.06); opacity: 1; }
+  70%  { transform: perspective(800px) rotateY(6deg) scale(1); }
+  100% { transform: perspective(800px) rotateY(0deg) scale(1); opacity: 1; }
+}
+.recruit-card-reveal {
+  animation: cardFlip 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes revealBgPulse {
+  0%   { opacity: 0; transform: scale(0.6); }
+  60%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+.reveal-radial {
+  position: absolute;
+  inset: 0;
+  animation: revealBgPulse 0.7s ease-out both;
+  pointer-events: none;
+}
+
+/* Rarity radial backgrounds */
+.reveal-bg-common       { background: radial-gradient(ellipse at center, rgba(138,132,120,0.2) 0%, transparent 65%); }
+.reveal-bg-uncommon     { background: radial-gradient(ellipse at center, rgba(200,255,58,0.25) 0%, transparent 65%); }
+.reveal-bg-rare         { background: radial-gradient(ellipse at center, rgba(52,214,232,0.3) 0%, transparent 65%); }
+.reveal-bg-epic         { background: radial-gradient(ellipse at center, rgba(177,91,255,0.35) 0%, transparent 65%); }
+.reveal-bg-legendary    { background: radial-gradient(ellipse at center, rgba(232,185,72,0.4) 0%, transparent 65%); }
+.reveal-bg-mythic       { background: radial-gradient(ellipse at center, rgba(255,0,85,0.4) 0%, transparent 60%); }
+.reveal-bg-ancient      { background: radial-gradient(ellipse at center, rgba(255,215,0,0.45) 0%, transparent 60%); }
+.reveal-bg-divine       { background: radial-gradient(ellipse at center, rgba(0,255,255,0.45) 0%, transparent 60%); }
+.reveal-bg-cosmic       { background: radial-gradient(ellipse at center, rgba(75,0,255,0.45) 0%, transparent 60%); }
+.reveal-bg-transcendent { background: radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, transparent 60%); }
+
+/* ---- PARTICLES ---- */
+@keyframes particleFly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+.se-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleFly var(--dur, 0.9s) ease-out var(--delay, 0s) both;
+}
+
+/* ============================================
+   ACHIEVEMENT BANNER (slides up from bottom)
+   ============================================ */
+#achievement-banner {
+  position: fixed;
+  bottom: -160px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2500;
+  min-width: 400px;
+  max-width: 560px;
+  background: linear-gradient(135deg, #191a0d 0%, #0d0d0d 100%);
+  border: 2px solid var(--se-acid);
+  border-radius: 6px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 -6px 40px rgba(200,255,58,0.35), inset 0 1px 0 rgba(200,255,58,0.15);
+  transition: bottom 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+#achievement-banner.show { bottom: 28px; }
+
+#achievement-banner .ach-icon {
+  font-size: 44px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+#achievement-banner .ach-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--se-acid);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+#achievement-banner .ach-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #fff;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+#achievement-banner .ach-desc {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+#achievement-banner .ach-reward {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--se-acid);
+  margin-top: 5px;
+}
+
+/* ============================================
+   FLOATING REWARD NUMBERS
+   ============================================ */
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1);    opacity: 1; }
+  100% { transform: translateY(-70px) scale(0.75); opacity: 0; }
+}
+.float-reward {
+  position: fixed;
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 1500;
+  animation: floatUp 1.4s ease-out forwards;
+  white-space: nowrap;
+}
+.float-reward.money   { color: var(--se-acid);  text-shadow: 0 0 12px rgba(200,255,58,0.9); }
+.float-reward.weapons { color: var(--se-blood);  text-shadow: 0 0 12px rgba(210,58,44,0.9); }
+.float-reward.prestige{ color: var(--se-gold);   text-shadow: 0 0 12px rgba(232,185,72,0.9); }
+.float-reward.respect { color: var(--se-cyan);   text-shadow: 0 0 12px rgba(52,214,232,0.9); }
+
+/* ============================================
+   ULTRA-RARE RARITY ANIMATIONS
+   ============================================ */
+.rarity-mythic {
+  border-color: #ff0055 !important;
+  animation: mythicPulse 1.4s ease-in-out infinite;
+}
+@keyframes mythicPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(255,0,85,0.5); }
+  50%       { box-shadow: 0 0 28px rgba(255,0,85,0.9), 0 0 50px rgba(255,0,85,0.3); }
+}
+
+.rarity-ancient {
+  border-color: #ffd700 !important;
+  animation: ancientPulse 1.7s ease-in-out infinite;
+}
+@keyframes ancientPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(255,215,0,0.5); }
+  50%       { box-shadow: 0 0 32px rgba(255,215,0,0.9), 0 0 60px rgba(255,215,0,0.3); }
+}
+
+.rarity-divine {
+  border-color: #00ffff !important;
+  animation: divinePulse 1.5s ease-in-out infinite;
+}
+@keyframes divinePulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(0,255,255,0.5); }
+  50%       { box-shadow: 0 0 36px rgba(0,255,255,1), 0 0 70px rgba(0,255,255,0.35); }
+}
+
+.rarity-cosmic {
+  border-color: #7b4fff !important;
+  animation: cosmicPulse 1.2s ease-in-out infinite;
+}
+@keyframes cosmicPulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(123,79,255,0.6); }
+  50%       { box-shadow: 0 0 38px rgba(123,79,255,1), 0 0 75px rgba(123,79,255,0.35); }
+}
+
+.rarity-transcendent {
+  border-color: #ffffff !important;
+  animation: transcendentPulse 0.9s ease-in-out infinite;
+}
+@keyframes transcendentPulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(255,255,255,0.5), 0 0 40px rgba(200,255,58,0.2); }
+  50%       { box-shadow: 0 0 50px rgba(255,255,255,1), 0 0 100px rgba(200,255,58,0.5); }
+}
+
+/* ============================================
+   POSITION CARD EFFECTS
+   ============================================ */
+
+/* Empty slot breathes to guide the player */
+@keyframes emptySlotBreath {
+  0%, 100% { border-left-color: rgba(255,255,255,0.12); }
+  50%       { border-left-color: rgba(200,255,58,0.55); box-shadow: inset 3px 0 10px rgba(200,255,58,0.08); }
+}
+.position-card:not(.filled) {
+  animation: emptySlotBreath 2.8s ease-in-out infinite;
+}
+
+/* Flash green when a character is assigned */
+@keyframes fillFlash {
+  0%   { background: rgba(200,255,58,0.35); }
+  100% { background: rgba(200,255,58,0.06); }
+}
+.position-card.fill-flash {
+  animation: fillFlash 0.7s ease-out !important;
+}
+
+/* ============================================
+   MISSION CARD AVAILABLE PULSE
+   ============================================ */
+@keyframes missionAvailable {
+  0%, 100% { border-left-color: var(--se-acid); }
+  50%       { border-left-color: #fff; box-shadow: 3px 0 14px rgba(200,255,58,0.45); }
+}
+.mission-card.available {
+  animation: missionAvailable 2.2s ease-in-out infinite;
+}
+
+/* ============================================
+   SCREEN SHAKE (Gang War hits)
+   ============================================ */
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10%       { transform: translate(-5px, -3px) rotate(-0.5deg); }
+  25%       { transform: translate(5px, 3px) rotate(0.5deg); }
+  40%       { transform: translate(-4px, 2px) rotate(-0.3deg); }
+  55%       { transform: translate(4px, -2px) rotate(0.3deg); }
+  70%       { transform: translate(-2px, 2px) rotate(0deg); }
+  85%       { transform: translate(2px, -1px) rotate(0deg); }
+}
+.screen-shake {
+  animation: screenShake 0.45s ease both !important;
+}
+
+/* ============================================
+   STAT VALUE POP (when resource changes)
+   ============================================ */
+@keyframes statPop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.2); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.stat-pop {
+  animation: statPop 0.4s ease;
+}
+
+/* ============================================
+   BUTTON PRESS EFFECT
+   ============================================ */
+.btn:active:not(:disabled),
+.btn-recruit:active:not(:disabled) {
+  transform: translateY(3px) scale(0.97) !important;
+  box-shadow: 0 1px 0 #4a6a10 !important;
+  transition: transform 0.05s, box-shadow 0.05s !important;
+}
+
+/* ============================================
+   CLICK RIPPLE
+   ============================================ */
+@keyframes rippleOut {
+  0%   { transform: scale(0);   opacity: 0.5; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: rippleOut 0.6s ease-out forwards;
+  pointer-events: none;
+}
+.btn, .btn-recruit { position: relative; overflow: hidden; }
