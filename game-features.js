@@ -123,12 +123,16 @@ function generateInitialMissions() {
 
 function generateNewMission() {
     const template = MISSION_TEMPLATES[Math.floor(Math.random() * MISSION_TEMPLATES.length)];
-    gameState.activeMissions.push({
+    const mission = {
         ...template,
         id: Date.now() + Math.random(),
         startTime: null,
         status: 'unavailable'
-    });
+    };
+    if (checkMissionRequirements(mission)) {
+        mission.status = 'available';
+    }
+    gameState.activeMissions.push(mission);
 }
 
 function updateMissions() {

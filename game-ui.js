@@ -44,7 +44,7 @@ function updateNavCounts() {
     document.getElementById('nav-collection-count').textContent = collected.size + '/' + TOTAL_CHARACTERS;
     
     const unlockedCount = gameState.unlockedAchievements.length;
-    document.getElementById('nav-achievements-count').textContent = unlockedCount + '/10';
+    document.getElementById('nav-achievements-count').textContent = unlockedCount + '/' + ACHIEVEMENTS.length;
     
     const territoryDescs = ['STARTER', 'RISING', 'EMPIRE'];
     document.getElementById('territory-status').textContent = territoryDescs[gameState.baseLevel - 1];
@@ -401,7 +401,7 @@ function renderAchievementsTab() {
 
 function getAchievementProgress(achievement) {
     const type = achievement.requirement.type;
-    
+
     if (type === 'recruits') {
         return gameState.totalRecruits;
     } else if (type === 'collection') {
@@ -412,10 +412,22 @@ function getAchievementProgress(achievement) {
         return collected.size;
     } else if (type === 'missions') {
         return gameState.completedMissions.length;
+    } else if (type === 'easy_missions') {
+        return gameState.completedEasyMissions || 0;
+    } else if (type === 'hard_missions') {
+        return gameState.completedHardMissions || 0;
+    } else if (type === 'speed_mission') {
+        return gameState.speedMissionCompleted || 0;
     } else if (type === 'money') {
         return gameState.money;
     } else if (type === 'respect') {
         return gameState.respect;
+    } else if (type === 'prestige') {
+        return gameState.prestige;
+    } else if (type === 'weapons') {
+        return gameState.weapons;
+    } else if (type === 'territory') {
+        return gameState.baseLevel;
     } else if (type === 'legendary') {
         const collected = [
             ...Object.values(gameState.assignedPositions).filter(id => id !== undefined),
@@ -425,12 +437,24 @@ function getAchievementProgress(achievement) {
             const char = ALL_CHARACTERS.find(c => c.id === id);
             return char && char.rarity === 'legendary';
         }).length;
-    } else if (type === 'territory') {
-        return gameState.baseLevel;
-    } else if (type === 'weapons') {
-        return gameState.weapons;
+    } else if (type === 'empire_income') {
+        const { income } = calculateIncome();
+        return Math.floor(income);
+    } else if (type === 'perfect_crew') {
+        const assignedIds = Object.values(gameState.assignedPositions).filter(id => id !== undefined);
+        if (assignedIds.length < POSITIONS.length) return 0;
+        const eliteRarities = ['epic', 'legendary', 'mythic', 'ancient', 'divine', 'cosmic', 'transcendent'];
+        const allElite = assignedIds.every(id => {
+            const char = ALL_CHARACTERS.find(c => c.id === id);
+            return char && eliteRarities.includes(char.rarity);
+        });
+        return allElite ? 1 : 0;
+    } else if (type === 'ultimate') {
+        if (gameState.money >= 1000000 && gameState.respect >= 100000 &&
+            gameState.weapons >= 10000 && gameState.prestige >= 100) return 1;
+        return 0;
     }
-    
+
     return 0;
 }
 
