@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Street Empire — Gang Management</title>
     <link rel="stylesheet" href="brand.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="v2.css">
     <link rel="stylesheet" href="game-overlay.css">
 </head>
 <body>
@@ -51,7 +51,7 @@
                 <button class="v2-nav-item" data-tab="wars">
                     <span class="v2-nav-icon">⚔</span>
                     <span class="v2-nav-label">GANG WARS</span>
-                    <span class="v2-nav-note">COMING SOON</span>
+                    <span class="v2-nav-note">Fight</span>
                 </button>
                 <button class="v2-nav-item" data-tab="collection">
                     <span class="v2-nav-icon">⊞</span>
@@ -245,6 +245,10 @@
     <!-- Notifications -->
     <div id="notifications"></div>
 
-    <script src="game.js"></script>
+    <!-- Modular Game Scripts - Load in order! -->
+    <script src="game-core.js"></script>
+    <script src="game-ui.js"></script>
+    <script src="game-features.js"></script>
+    <script src="game-gangwars.js"></script>
 </body>
 </html>
